@@ -5,7 +5,7 @@ const App = () => {
   const [cards, setCards] = useState([]);
   const [level, setLevel] = useState(1);
   const [levelStart, setLevelStart] = useState(false);
-  const [levelInfo, setLevelInfo] = useState({});
+  const [overlayVisibility, setOverlayVisibility] = useState(true);
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -30,7 +30,6 @@ const App = () => {
     if (level === 1) {
       setCards(initialCards);
     }
-    setLevelInfo(info);
     calculateCardsWidth();
   }, [level]);
 
@@ -57,6 +56,7 @@ const App = () => {
 
   const clearCards = () => {
     setCards((preCards) => preCards.map((x) => ({ ...x, turned: false })));
+    setLevelStart(true);
   };
 
   const startLevel = (level) => {
@@ -65,17 +65,17 @@ const App = () => {
     const initialCards = Array.apply(null, Array(info.count)).map((_, index) => ({ id: index, turned: false }));
     const newCards = initialCards.map((x) => ({ ...x, turned: false }));
     while (selectedCards.length < info.selected) {
-      let randomNumber = Math.floor(Math.random() * levelInfo.count);
+      let randomNumber = Math.floor(Math.random() * info.count);
       while (selectedCards.includes(randomNumber)) {
-        randomNumber = Math.floor(Math.random() * levelInfo.count);
+        randomNumber = Math.floor(Math.random() * info.count);
       }
       selectedCards.push(randomNumber);
       newCards.find((x) => x.id === randomNumber).turned = true;
     }
     setCards(newCards);
     setSelectedCards(selectedCards);
-    setLevelStart(true);
     setWin(false);
+    setOverlayVisibility(false);
     if (!!clearCardsTimer) {
       clearTimeout(clearCardsTimer);
     }
@@ -85,6 +85,7 @@ const App = () => {
   const winCheck = (cards) => {
     if (cards.filter((x) => x.turned === true).length === selectedCards.length) {
       setWin(true);
+      setOverlayVisibility(true);
     }
   };
 
@@ -107,6 +108,7 @@ const App = () => {
         winCheck(newCards);
       } else {
         setGameOver(true);
+        setOverlayVisibility(true);
         showAllSelected();
       }
     }
@@ -117,6 +119,7 @@ const App = () => {
     setLevelStart(false);
     setWin(false);
     setGameOver(false);
+    setOverlayVisibility(true);
     const newCards = cards.map((x) => ({ ...x, turned: false }));
     setCards(newCards);
   };
@@ -124,6 +127,7 @@ const App = () => {
   const nextLevel = () => {
     setLevelStart(false);
     setWin(false);
+    setOverlayVisibility(false);
     setLevel((level) => {
       const newLevel = level + 1;
       startLevel(newLevel);
@@ -154,7 +158,7 @@ const App = () => {
 
   return (
     <div className='App'>
-      {(gameOver || win || levelStart === false) && (
+      {overlayVisibility && (
         <div className='overlay'>
           {!gameOver && win && (
             <div className='controlScene'>
