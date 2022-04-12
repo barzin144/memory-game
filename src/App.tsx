@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import './App.css';
+import React,{ useState, useEffect, useRef } from "react";
+import "./App.scss";
 let clearCardsTimer = null;
 const App = () => {
   const [cards, setCards] = useState([]);
@@ -9,7 +9,7 @@ const App = () => {
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
-  const [cardsWidth, setCardsWidth] = useState(0);
+  const [cardsWidth, setCardsWidth] = useState('0');
 
   const cardsContainerRef = useRef(null);
   const resizeObserver = useRef(null);
@@ -26,7 +26,10 @@ const App = () => {
 
   useEffect(() => {
     const info = getLevelInfo(level);
-    const initialCards = Array.apply(null, Array(info.count)).map((_, index) => ({ id: index, turned: false }));
+    const initialCards = Array.apply(null, Array(info.count)).map((_, index) => ({
+      id: index,
+      turned: false,
+    }));
     if (level === 1) {
       setCards(initialCards);
     }
@@ -62,7 +65,10 @@ const App = () => {
   const startLevel = (level) => {
     const selectedCards = [];
     const info = getLevelInfo(level);
-    const initialCards = Array.apply(null, Array(info.count)).map((_, index) => ({ id: index, turned: false }));
+    const initialCards = Array.apply(null, Array(info.count)).map((_, index) => ({
+      id: index,
+      turned: false,
+    }));
     const newCards = initialCards.map((x) => ({ ...x, turned: false }));
     while (selectedCards.length < info.selected) {
       let randomNumber = Math.floor(Math.random() * info.count);
@@ -153,29 +159,29 @@ const App = () => {
     const levelInfo = getLevelInfo(level);
     const cardsInRow = Math.sqrt(levelInfo.count);
 
-    return { gridTemplateColumns: 'auto '.repeat(cardsInRow) };
+    return { gridTemplateColumns: "auto ".repeat(cardsInRow) };
   };
 
   return (
-    <div className='App'>
+    <div className="App">
       {overlayVisibility && (
-        <div className='overlay'>
+        <div className="overlay">
           {!gameOver && win && (
-            <div className='controlScene'>
+            <div className="controlScene">
               <span>&#127881; CONGRATULATION &#127881;</span>
               <button onClick={nextLevel}>NEXT LEVEL &gt;</button>
             </div>
           )}
           {level === 1 && !win && !gameOver && (
-            <div className='controlScene'>
+            <div className="controlScene">
               <span>&#129300; MEMORIZE THE LOCATION OF THE BLUE CARDS &#129300;</span>
-              <button type='button' onClick={() => startLevel(1)}>
+              <button type="button" onClick={() => startLevel(1)}>
                 START
               </button>
             </div>
           )}
           {gameOver && (
-            <div className='controlScene'>
+            <div className="controlScene">
               <span>&#129402; GAME OVER &#129402;</span>
               <span>YOU SELECTE THE WRONG CARD !!!</span>
               <button onClick={resetGame}>RESTART</button>
@@ -183,14 +189,14 @@ const App = () => {
           )}
         </div>
       )}
-      <span className='levelText'>LEVEL-{level}</span>
-      <div style={cardContainerStyle()} className='cardsContainer' ref={cardsContainerRef}>
+      <span className="levelText">LEVEL-{level}</span>
+      <div style={cardContainerStyle()} className="cardsContainer" ref={cardsContainerRef}>
         {cards.map((card, index) => (
           <div
             key={index}
             style={{ height: cardsWidth }}
             onClick={() => onCardClick(card.id)}
-            className={`card ${card.turned ? 'turned' : ''}`}
+            className={`card ${card.turned ? "turned" : ""}`}
           ></div>
         ))}
       </div>

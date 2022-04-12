@@ -1,0 +1,12 @@
+{
+    "include": ["src/**/*"],
+    "exclude": ["node_module"],
+    "compilerOptions": {
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "es5",
+        "module": "ESNext",
+        "lib": ["ES2018","DOM"],
+        "jsx": "react"
+    }
+}
